@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               App-BackupPlan
-version:            0.0.1
+version:            0.0.2
 abstract:           Perl extension for automated, regular backups
 author:
     - gualtiero chiaia <gchiaia@prismaqg.com>

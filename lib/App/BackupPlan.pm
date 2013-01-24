@@ -165,7 +165,7 @@ our @EXPORT = qw();
 
 
 BEGIN {
-	our $VERSION = '0.0.1';
+	our $VERSION = '0.0.2';
 	print "App::BackupPlan by Gualtiero Chiaia, version $VERSION\n";	
 }
 
@@ -518,7 +518,7 @@ L<XML::DOM>, L<Log::Log4perl>, L<File::Find>, L<Archive::Tar>
 
 =head1 AUTHOR
 
-Gualtiero Chiaia, E<lt>gchiaia@prismaqf.comE<gt>
+Gualtiero Chiaia
 
 =head1 COPYRIGHT AND LICENSE
 
