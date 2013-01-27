@@ -5,12 +5,13 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME              => 'App::BackupPlan',
     VERSION_FROM      => 'lib/App/BackupPlan.pm', # finds $VERSION
+    LICENSE	  		  => 'perl',
     PREREQ_PM         => {'XML::DOM'      => 1.44,
     	                  'Log::Log4perl' => 1.33,
                           'File::Find'    => 1.15,
-                          'Archive::Tar'  => 1.88}, 
+                          'Archive::Tar'  => 1.76}, 
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/App/BackupPlan.pm', # retrieve abstract from module
-       AUTHOR         => 'gualtiero chiaia <gchiaia@prismaqg.com>') : ()),
+       AUTHOR         => 'gualtiero chiaia') : ()),
 );
 

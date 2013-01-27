@@ -165,7 +165,7 @@ our @EXPORT = qw();
 
 
 BEGIN {
-	our $VERSION = '0.0.2';
+	our $VERSION = '0.0.3';
 	print "App::BackupPlan by Gualtiero Chiaia, version $VERSION\n";	
 }
 
