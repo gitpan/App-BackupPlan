@@ -105,9 +105,10 @@ sub info {
 }
 
 sub tar {
-	my( $self, $ts ) = @_;
+	my( $self, $ts, $hasExcludeTag ) = @_;
 	my $filename = sprintf("%s/%s_%s.tar.gz",$self->{targetDir},$self->{prefix},$ts);
-	my $output = `tar cvzf $filename --exclude-tag-all=NOTAR $self->{sourceDir} 2>&1 1>/dev/null`;
+	my $option = '--exclude-tag-all=NOTAR' if $hasExcludeTag;
+	my $output = `tar cvzf $filename $option $self->{sourceDir} 2>&1 1>/dev/null`;
 	if (-e $filename) {
 		my $stat = `ls -lh $filename`;
 		return "system tar: $stat";	
@@ -137,6 +138,7 @@ package App::BackupPlan;
 use 5.012003;
 use strict;
 use warnings;
+use Config;
 use XML::DOM;
 use Log::Log4perl qw(:easy);
 
@@ -165,7 +167,7 @@ our @EXPORT = qw();
 
 
 BEGIN {
-	our $VERSION = '0.0.3';
+	our $VERSION = '0.0.4';
 	print "App::BackupPlan by Gualtiero Chiaia, version $VERSION\n";	
 }
 
@@ -174,6 +176,7 @@ BEGIN {
 #todo allow default behaviour for logging
 
 our $TAR = 'system'; #use system tar
+our $HAS_EXCLUDE_TAG = 0; #has tar option --exclude-tag
 
 sub new {
 	my $class = shift;
@@ -201,7 +204,9 @@ sub run {
 	}
 	
 	my $logger = Log::Log4perl::get_logger();
-
+	
+	#get the environment
+	&getEnvironmet();
 
 	#--now read config file
 	my $parser = new XML::DOM::Parser;
@@ -229,7 +234,7 @@ sub run {
 			$logger->info("Need a new tar file, last tar was on $lastTS");				
 			my $tarout;
 			if (lc $TAR eq 'perl') {$tarout= $policy->perlTar($ts);}
-			else {$tarout = $policy->tar($ts);}
+			else {$tarout = $policy->tar($ts,$HAS_EXCLUDE_TAG);}
 			if ($tarout =~ /Error/i) {
 				$logger->error($tarout);	
 			} else {
@@ -252,6 +257,15 @@ sub run {
 		} #end if
 	} #end foreach	
 } #end sub
+
+sub getEnvironment {
+	my $env = $Config{osname};
+	if 	($Config{osname} =~ /linux/i) {
+		my $output = `man tar | grep /\-\-exclude\-tag/ | wc -l`;
+		$HAS_EXCLUDE_TAG = 1 unless ($output eq '0');  		
+	} else {$TAR = 'perl';}
+	
+}
 
 
 sub getPolicies {

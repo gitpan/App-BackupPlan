@@ -70,6 +70,9 @@ my %files = App::BackupPlan::getFiles($sd,$pr);
 my $nc = keys %files;
 cmp_ok(0,'lt',$nc,'number of files in source directory'); #test 15
 
+#environment test
+App::BackupPlan::getEnvironment();
+
 #tar test
 my $out = $policy->tar(App::BackupPlan::formatTimeSpan(time));
 unlike($out, qr/Error/, 'tar does not produce an Error'); #test 16
