@@ -107,7 +107,8 @@ sub info {
 sub tar {
 	my( $self, $ts, $hasExcludeTag ) = @_;
 	my $filename = sprintf("%s/%s_%s.tar.gz",$self->{targetDir},$self->{prefix},$ts);
-	my $option = '--exclude-tag-all=NOTAR' if $hasExcludeTag;
+	my $option = '';
+	$option = '--exclude-tag-all=NOTAR' if $hasExcludeTag;
 	my $output = `tar cvzf $filename $option $self->{sourceDir} 2>&1 1>/dev/null`;
 	if (-e $filename) {
 		my $stat = `ls -lh $filename`;
@@ -167,7 +168,7 @@ our @EXPORT = qw();
 
 
 BEGIN {
-	our $VERSION = '0.0.4';
+	our $VERSION = '0.0.5';
 	print "App::BackupPlan by Gualtiero Chiaia, version $VERSION\n";	
 }
 
@@ -518,6 +519,11 @@ behaviour for this module.
 There is also the option of using L<Archive::Tar> perl module isntead of the I<system> B<tar>. This is
 recommended for Windows based systems, or if the B<tar> executable is not available. This behaviour is designated
 as I<perl> B<tar> and is selected by setting C<$App::BackupPlan::TAR='perl'>.
+
+On some distributions B<XML::DOM> does not build straight away, using cpan install or download & make.
+This is caused by a dependency of this module, B<XML::Parser>, requiring a C library to be present
+in your system: B<expat-devel>. On some distributions, Debian for example, this package is unavailble.
+This problem can be overcome by first installing (apt-get) B<libxml-parser-perl>.
 
 	
 =head2 EXPORT

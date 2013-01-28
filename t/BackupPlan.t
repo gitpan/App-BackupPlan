@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use Time::Local;
 
-use Test::More tests => 19; 
+use Test::More tests => 17; 
 BEGIN 
 { use_ok('App::BackupPlan')}; #test 1
 
@@ -70,17 +70,21 @@ my %files = App::BackupPlan::getFiles($sd,$pr);
 my $nc = keys %files;
 cmp_ok(0,'lt',$nc,'number of files in source directory'); #test 15
 
-#environment test
+#get environment
 App::BackupPlan::getEnvironment();
 
 #tar test
-my $out = $policy->tar(App::BackupPlan::formatTimeSpan(time));
-unlike($out, qr/Error/, 'tar does not produce an Error'); #test 16
-like($out, qr/system/,'system tar'); #test 17
-
-#perl tar test
-$out = $policy->perlTar(App::BackupPlan::formatTimeSpan(time));
-unlike($out, qr/Error/, 'tar does not produce an Error'); #test 18
-like($out, qr/perl/,'perl tar'); #test 19
+if ($App::BackupPlan::TAR eq 'system') {
+	my $out = $policy->tar(App::BackupPlan::formatTimeSpan(time),$App::BackupPlan::HAS_EXCLUDE_TAG);
+	unlike($out, qr/Error/, 'tar does not produce an Error'); #test 16
+	like($out, qr/system/,'system tar'); #test 17
+	
+}
+else { #perl tar test
+	my $out = $policy->perlTar(App::BackupPlan::formatTimeSpan(time));
+	unlike($out, qr/Error/, 'tar does not produce an Error'); #test 16
+	like($out, qr/perl/,'perl tar'); #test 17
+	
+}
 
 
