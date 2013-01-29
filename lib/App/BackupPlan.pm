@@ -140,6 +140,7 @@ use 5.012003;
 use strict;
 use warnings;
 use Config;
+use Time::Local;
 use XML::DOM;
 use Log::Log4perl qw(:easy);
 
@@ -168,13 +169,11 @@ our @EXPORT = qw();
 
 
 BEGIN {
-	our $VERSION = '0.0.5';
+	our $VERSION = '0.0.6';
 	print "App::BackupPlan by Gualtiero Chiaia, version $VERSION\n";	
 }
 
 # Preloaded methods go here.
-
-#todo allow default behaviour for logging
 
 our $TAR = 'system'; #use system tar
 our $HAS_EXCLUDE_TAG = 0; #has tar option --exclude-tag
@@ -317,30 +316,40 @@ sub injectDefaultPolicy {
 	return %raw_pcs;
 }
 
-sub addTimeSpan {
+sub addTimeSpan{
 	my ($timestamp,$span) = @_;
+	my @ts = localtime $timestamp;
+	my $year = $ts[5]+1900;
+	my $month = $ts[4];
+	my $day = $ts[3];
+	
 	if ($span=~/(\d+)d/) {
-		return $timestamp+86400*$1;
+		return timelocal(0,0,0,$day+$1,$month,$year);
 	}
 	if ($span=~/(\d+)m/) {
-		return $timestamp+86400*30*$1;
+		return timelocal(0,0,0,$day,$month+$1,$year);
 	}
 	if ($span=~/(\d+)y/) {
-		return $timestamp+86400*30*12*$1;
+		return timelocal(0,0,0,$day,$month,$year+$1);
 	}
 	return $timestamp;		
 }
 
-sub subTimeSpan {
+sub subTimeSpan{
 	my ($timestamp,$span) = @_;
+	my @ts = localtime $timestamp;
+	my $year = $ts[5]+1900;
+	my $month = $ts[4];
+	my $day = $ts[3];
+	
 	if ($span=~/(\d+)d/) {
-		return $timestamp-86400*$1;
+		return timelocal(0,0,0,$day-$1,$month,$year);
 	}
 	if ($span=~/(\d+)m/) {
-		return $timestamp-86400*30*$1;
+		return timelocal(0,0,0,$day,$month-$1,$year);
 	}
 	if ($span=~/(\d+)y/) {
-		return $timestamp-86400*30*12*$1;
+		return timelocal(0,0,0,$day,$month,$year-$1);
 	}
 	return $timestamp;		
 }

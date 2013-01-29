@@ -44,11 +44,11 @@ cmp_ok('19631022','eq',$thenTs,'add seven days'); #test 9
 #add 2 months
 $then = App::BackupPlan::addTimeSpan($time,'2m');
 $thenTs = App::BackupPlan::formatTimeSpan($then);		
-cmp_ok('19631213','eq',$thenTs,'add two months'); #test 10
+cmp_ok('19631215','eq',$thenTs,'add two months'); #test 10
 #add 1 year
 $then = App::BackupPlan::addTimeSpan($time,'1y');
 $thenTs = App::BackupPlan::formatTimeSpan($then);		
-cmp_ok('19641009','eq',$thenTs,'add one year'); #test 11
+cmp_ok('19641015','eq',$thenTs,'add one year'); #test 11
 #subtracting 7 days
 $then = App::BackupPlan::subTimeSpan($time,'7d');
 $thenTs = App::BackupPlan::formatTimeSpan($then);		
@@ -56,11 +56,11 @@ cmp_ok('19631008','eq',$thenTs,'subtracting seven days'); #test 12
 #Subtracting 2 months
 $then = App::BackupPlan::subTimeSpan($time,'2m');
 $thenTs = App::BackupPlan::formatTimeSpan($then);		
-cmp_ok('19630816','eq',$thenTs,'subtracting two months'); #test 13
+cmp_ok('19630815','eq',$thenTs,'subtracting two months'); #test 13
 #Subtracting 1 year
 $then = App::BackupPlan::subTimeSpan($time,'1y');
 $thenTs = App::BackupPlan::formatTimeSpan($then);		
-cmp_ok('19621020','eq',$thenTs,'subtracting one year'); #test 14
+cmp_ok('19621015','eq',$thenTs,'subtracting one year'); #test 14
 
 #getFiles test
 my $policy = $raw_policies{'test'};
