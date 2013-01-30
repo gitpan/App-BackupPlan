@@ -140,6 +140,7 @@ use 5.012003;
 use strict;
 use warnings;
 use Config;
+use DateTime;
 use Time::Local;
 use XML::DOM;
 use Log::Log4perl qw(:easy);
@@ -169,7 +170,7 @@ our @EXPORT = qw();
 
 
 BEGIN {
-	our $VERSION = '0.0.6';
+	our $VERSION = '0.0.7';
 	print "App::BackupPlan by Gualtiero Chiaia, version $VERSION\n";	
 }
 
@@ -206,7 +207,7 @@ sub run {
 	my $logger = Log::Log4perl::get_logger();
 	
 	#get the environment
-	&getEnvironmet();
+	&getEnvironment;
 
 	#--now read config file
 	my $parser = new XML::DOM::Parser;
@@ -320,36 +321,41 @@ sub addTimeSpan{
 	my ($timestamp,$span) = @_;
 	my @ts = localtime $timestamp;
 	my $year = $ts[5]+1900;
-	my $month = $ts[4];
+	my $month = $ts[4]+1;
 	my $day = $ts[3];
-	
+	my $dt = DateTime->new(year	=> $year, month	=> $month, day	=> $day);
 	if ($span=~/(\d+)d/) {
-		return timelocal(0,0,0,$day+$1,$month,$year);
+		$dt->add_duration(DateTime::Duration->new(days => $1));
+		return timelocal(0,0,0,$dt->day(),$dt->month()-1,$dt->year());
 	}
 	if ($span=~/(\d+)m/) {
-		return timelocal(0,0,0,$day,$month+$1,$year);
+		$dt->add_duration(DateTime::Duration->new(months => $1));
+		return timelocal(0,0,0,$dt->day(),$dt->month()-1,$dt->year());
 	}
 	if ($span=~/(\d+)y/) {
-		return timelocal(0,0,0,$day,$month,$year+$1);
+		$dt->add_duration(DateTime::Duration->new(years => $1));
+		return timelocal(0,0,0,$dt->day(),$dt->month()-1,$dt->year());
 	}
-	return $timestamp;		
 }
 
 sub subTimeSpan{
 	my ($timestamp,$span) = @_;
 	my @ts = localtime $timestamp;
 	my $year = $ts[5]+1900;
-	my $month = $ts[4];
+	my $month = $ts[4]+1;
 	my $day = $ts[3];
-	
+	my $dt = DateTime->new(year	=> $year, month	=> $month, day	=> $day,);
 	if ($span=~/(\d+)d/) {
-		return timelocal(0,0,0,$day-$1,$month,$year);
+		$dt->subtract_duration(DateTime::Duration->new(days => $1));
+		return timelocal(0,0,0,$dt->day(),$dt->month()-1,$dt->year());
 	}
 	if ($span=~/(\d+)m/) {
-		return timelocal(0,0,0,$day,$month-$1,$year);
+		$dt->subtract_duration(DateTime::Duration->new(months => $1));
+		return timelocal(0,0,0,$dt->day(),$dt->month()-1,$dt->year());
 	}
 	if ($span=~/(\d+)y/) {
-		return timelocal(0,0,0,$day,$month,$year-$1);
+		$dt->subtract_duration(DateTime::Duration->new(years => $1));
+		return timelocal(0,0,0,$dt->day(),$dt->month()-1,$dt->year());
 	}
 	return $timestamp;		
 }
